@@ -5,7 +5,7 @@ namespace :run_once do
   desc 'import athletes into database'
   task :import_athletes do
 
-    DATA_PATH = '../../../data'
+    DATA_PATH = './data'
     positions = %w(QB WR RB TE K DEF)
     Dir.foreach(DATA_PATH) do |filename|
       next if filename.start_with?('.')
