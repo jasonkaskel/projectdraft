@@ -8,6 +8,6 @@ class Draft < ActiveRecord::Base
   has_many :picks
 
   def current_pick
-    picks.maximum(:number) + 1
+    (picks.maximum(:number) || 0) + 1
   end
 end

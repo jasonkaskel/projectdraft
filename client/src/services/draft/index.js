@@ -5,7 +5,7 @@ import { API_URL } from '../../constants'
 
 export const fetchDraft = () => (dispatch, getState) => {
   dispatch(actions.fetchDraftStart)
-  return axios.get(`${API_URL}/`)
+  return axios.get(`${API_URL}/hc_draft`)
     .then(
       res => {
         dispatch(actions.fetchDraftSuccess(res.data))
@@ -18,7 +18,7 @@ export const fetchDraft = () => (dispatch, getState) => {
 
 export const fetchAthletes = () => (dispatch, getState) => {
   dispatch(actions.fetchAthletesStart)
-  return axios.get(`${API_URL}/api/athletes`)
+  return axios.get(`${API_URL}/athletes`)
     .then(
       res => {
         dispatch(actions.fetchAthletesSuccess(res.data))
@@ -31,7 +31,7 @@ export const fetchAthletes = () => (dispatch, getState) => {
 
 export const makePick = (athlete, team) => (dispatch, getState) => {
   dispatch(actions.makePickStart)
-  return axios.post(`${API_URL}/api/picks`, {
+  return axios.post(`${API_URL}/picks`, {
     athlete_id: athlete.id,
     team_id: team.id,
   })

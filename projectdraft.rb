@@ -48,7 +48,7 @@ post '/api/picks' do
   { pick: pick }.to_json
 end
 
-get '/api/' do
+get '/api/hc_draft' do
   player_ids = (1..500).to_a.sample(12)
   draft = Draft.find_or_create_by(name: 'Special Teams 2016')
   teams = [
