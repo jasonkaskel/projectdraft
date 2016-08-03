@@ -7,7 +7,7 @@ node_modules
 server/.bundle
 
 # production
-#build
+build
 
 # misc
 .DS_Store
