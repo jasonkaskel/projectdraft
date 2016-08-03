@@ -1,0 +1,7 @@
+development:
+  adapter: postgresql
+  database: projectdraft
+  host: localhost
+  username: projectdraft
+  password: projectdraft
+  pool: 5
