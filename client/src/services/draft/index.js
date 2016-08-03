@@ -5,7 +5,7 @@ import { API_URL } from '../../constants'
 
 export const fetchDraft = () => (dispatch, getState) => {
   dispatch(actions.fetchDraftStart)
-  return axios.get(`${API_URL}/`)
+  return axios.get(`${API_URL}/hc_draft`)
     .then(
       res => {
         dispatch(actions.fetchDraftSuccess(res.data))
