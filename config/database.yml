@@ -1,7 +1,18 @@
-development:
+default: &default
   adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
   database: projectdraft
   host: localhost
   username: projectdraft
   password: projectdraft
-  pool: 5
+
+production:
+  <<: *default
+  database: ENV['DATABASE_NAME'],
+  host: ENV['DATABASE_HOST'],
+  username: ENV['DATABASE_USERNAME']
+  password: ENV['DATABASE_PASSWORD']
