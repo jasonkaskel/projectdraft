@@ -9,7 +9,6 @@ require './models/manager'
 require './models/pick'
 require './models/team'
 
-set :database_file, './config/database.yml'
 set :root, File.dirname(__FILE__)
 
 before '*' do
