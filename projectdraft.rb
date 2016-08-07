@@ -131,7 +131,7 @@ get '/api/hc_draft' do
     athlete = nil
     loop do
       athlete = Athlete.where('average_draft_position < 150').sample
-      break if Pick.find_by(athlete: _athlete).nil?
+      break if Pick.find_by(athlete: athlete).nil?
     end
 
     Pick.create! \
