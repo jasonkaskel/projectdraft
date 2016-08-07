@@ -1,16 +1,15 @@
-import axios from 'axios'
-
+import { xhr } from '../../services'
 import actions from '../../actions'
-import { API_URL } from '../../constants'
 
 export const fetchDraft = () => (dispatch, getState) => {
   dispatch(actions.fetchDraftStart)
-  return axios.get(`${API_URL}/hc_draft`)
+  return xhr('get', '/hc_draft')
     .then(
       res => {
         dispatch(actions.fetchDraftSuccess(res.data))
       },
       err => {
+        if (err.response.status === 401) dispatch(actions.showLogin())
         dispatch(actions.fetchDraftFailure(err))
       }
     )
@@ -18,7 +17,7 @@ export const fetchDraft = () => (dispatch, getState) => {
 
 export const fetchAthletes = () => (dispatch, getState) => {
   dispatch(actions.fetchAthletesStart)
-  return axios.get(`${API_URL}/athletes`)
+  return xhr('get', '/athletes')
     .then(
       res => {
         dispatch(actions.fetchAthletesSuccess(res.data))
@@ -31,10 +30,10 @@ export const fetchAthletes = () => (dispatch, getState) => {
 
 export const makePick = (athlete, team) => (dispatch, getState) => {
   dispatch(actions.makePickStart)
-  return axios.post(`${API_URL}/picks`, {
+  return xhr('post', '/picks', {data: {
     athlete_id: athlete.id,
     team_id: team.id,
-  })
+  }})
     .then(
       res => {
         dispatch(actions.makePickSuccess(res.data))

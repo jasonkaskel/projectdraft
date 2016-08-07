@@ -1,3 +1,4 @@
 #! /bin/bash -e
 
-bundle exec puma -C config/puma.rb $@
+# bundle exec puma -C config/puma.rb $@
+bundle exec rerun --pattern="**/*.{rb}" "puma -C config/puma.rb $@"

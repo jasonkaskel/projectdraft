@@ -1,17 +1,18 @@
 const DEFAULT_SEARCH_FILTERS = ["QB","WR","RB","TE","K","DEF"]
 
-const initalState = {
+const initialState = {
   isFetching: false,
   isMakingPick: false,
-  error: null,
+  makePickError: null,
   draft: {
     teams: [],
     picks: [],
+    total_rounds: 15,
   },
   athletes: null,
   searchTerm: null,
   searchFilters: DEFAULT_SEARCH_FILTERS,
-  currentPick: null
+  currentPick: null,
 }
 
 const splicePicksIntoAthletes = (athletes, picks) => {
@@ -27,7 +28,7 @@ const splicePicksIntoAthletes = (athletes, picks) => {
   })
 }
 
-const draft = (state = initalState, action) => {
+const draft = (state = initialState, action) => {
   switch(action.type) {
     case 'FETCH_DRAFT_START':
       return {
@@ -43,10 +44,12 @@ const draft = (state = initalState, action) => {
         draft: action.data.draft,
         athletes: splicePicksIntoAthletes(state.athletes, action.data.draft.picks)
       }
-    case 'FETCH_DRAFT_ERROR':
+    case 'FETCH_DRAFT_FAILURE':
       return {
         ...state,
-        error: action.error
+        error: action.error.response.status === 401 ?
+          null :
+          "There was an error with your request"
       }
     case 'FETCH_ATHLETE_START':
       return {
@@ -71,13 +74,13 @@ const draft = (state = initalState, action) => {
       return {
         ...state,
         isMakingPick: true,
-        error: null
+        makePickError: null
       }
     case 'MAKE_PICK_SUCCESS':
       return {
         ...state,
         isMakingPick: false,
-        error: null,
+        makePickError: null,
         draft: {
           ...state.draft,
           picks: state.draft.picks.concat([action.data.pick])
@@ -91,7 +94,9 @@ const draft = (state = initalState, action) => {
       return {
         ...state,
         isMakingPick: false,
-        error: action.err
+        makePickError: action.error.response.status === 403 ?
+          "It is not currently your pick" :
+          "There was an error with your request",
       }
     case 'SET_SEARCH_TERM':
       return {

@@ -8,6 +8,8 @@ import './App.css';
 import appStore from './reducers'
 import DraftBoard from './components/draft/DraftBoard'
 import DraftPick from './components/draft/DraftPick'
+import LoginModal from './components/login/LoginModal'
+import Login from './components/login/Login'
 
 let store = createStore(appStore, applyMiddleware(thunk))
 
@@ -18,9 +20,11 @@ class App extends Component {
         <div className='App'>
           <Router history={browserHistory}>
             <Route path="/" component={DraftBoard} />
+            <Route path="/login/:token" component={Login} />
             <Route path="/board" component={DraftBoard} />
             <Route path="/pick" component={DraftPick} />
           </Router>
+          <LoginModal caller={this} />
         </div>
       </Provider>
     );

@@ -6,6 +6,17 @@ import actions from '../../actions'
 import asyncActions from '../../services'
 import Athlete from './Athlete'
 
+const styles = {
+  header: {
+    height: 92,
+  },
+  currentPick: {
+    borderRadius: 7,
+    outline: "none",
+    boxShadow: "inset 0 0 10px 5px #9ecaed",
+  },
+}
+
 class DraftBoard extends Component {
   static propTypes = {
     draft: PropTypes.object,
@@ -14,17 +25,18 @@ class DraftBoard extends Component {
   }
 
   fetchDraft() {
+    const fetchAgain = () => { delay(() => { this.fetchDraft() }, 8000) }
     this.props.fetchDraft()
-      .then(() => {
-        delay(() => { this.fetchDraft() }, 8000)
-      })
+      .then(fetchAgain, fetchAgain)
   }
 
   componentDidMount() {
     this.fetchDraft()
   }
 
-  picksToRounds({ picks, size }) {
+  picksToRounds(draft) {
+    const picks = draft.picks
+    const size = draft.teams.length
     let rounds = []
     let haveSetCurrent = false
 
@@ -60,26 +72,28 @@ class DraftBoard extends Component {
         rounds.push([{ current: true, key }])
       }
     }
+    while (rounds.length < draft.total_rounds) {
+      rounds.push([])
+    }
     return rounds
   }
 
   renderBlankPick(pick) {
     return (
       <td
-        className={pick.current ? 'currentPick' : null}
+        style={pick.current ? styles.currentPick : null}
         key={pick.key}
       >
-        {pick.current ? '(c)' : null}
+        {pick.current ? (
+          <em>On the Clock</em>
+        ) : null}
       </td>
     )
   }
 
   render() {
     const draft = this.props.draft
-    const rounds = this.picksToRounds({
-      picks: draft.picks.slice(0),
-      size: draft.teams.length
-    })
+    const rounds = this.picksToRounds(draft)
 
     return (
       <table>
@@ -92,13 +106,13 @@ class DraftBoard extends Component {
           </tr>
         </thead>
         <tbody>
-          {rounds.map(function(round, i) {
+          {rounds.map(function(round, round_index) {
             return (
-              <tr key={`round${i}`}>
-                <th>{i+1}</th>
-                {round.map(function(pick, j) {
+              <tr className={`round-${round_index}`} key={`round${round_index}`}>
+                <th style={styles.header}>{round_index+1}</th>
+                {round.map(function(pick, pick_index) {
                   return !pick.athlete ? this.renderBlankPick(pick) : (
-                    <td key={`pick-${i}-${j}`}>
+                    <td key={`pick-${round_index}-${pick_index}`}>
                       <Athlete
                         athlete={pick.athlete}
                       />
@@ -115,12 +129,15 @@ class DraftBoard extends Component {
 
 }
 
-const mapStateToProps = ({ draft }) => ({ draft: draft.draft })
+const mapStateToProps = ({ draft }) => ({
+  draft: draft.draft,
+  error: draft.error,
+})
+
 const mapDispatchToProps = (dispatch) => ({
   fetchDraft: () => dispatch(asyncActions.fetchDraft()),
   getDraft: () => dispatch(actions.getDraft()),
   makePick: (picks, pick) => dispatch(actions.makePick(picks, pick)),
-  // refresh: () => dispatch(asyncActions.refresh()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DraftBoard)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160801013357) do
+ActiveRecord::Schema.define(version: 20160807120418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,13 +35,14 @@ ActiveRecord::Schema.define(version: 20160801013357) do
     t.integer  "commissioner_ids", default: [],              array: true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "total_rounds",     default: 15
   end
 
   create_table "managers", force: :cascade do |t|
     t.text     "email"
-    t.integer  "cell"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "cell"
     t.index ["cell"], name: "index_managers_on_cell", unique: true, using: :btree
     t.index ["email"], name: "index_managers_on_email", unique: true, using: :btree
   end
@@ -63,6 +64,18 @@ ActiveRecord::Schema.define(version: 20160801013357) do
     t.integer  "manager_ids", default: [],              array: true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "order",                    null: false
+    t.index ["order"], name: "index_teams_on_order", unique: true, using: :btree
+  end
+
+  create_table "tokens", force: :cascade do |t|
+    t.text     "value",      null: false
+    t.text     "token_type", null: false
+    t.integer  "manager_id", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["value", "token_type"], name: "index_tokens_on_value_and_token_type", unique: true, using: :btree
   end
 
 end

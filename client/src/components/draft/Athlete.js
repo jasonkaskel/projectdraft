@@ -7,6 +7,9 @@ const styles = {
     border: "1px solid black",
     marginLeft: "1px",
     marginRight: "1px",
+    marginBottom: ".25em",
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   positionContainer: {
     width: "65px",
@@ -28,10 +31,11 @@ const styles = {
     right: 0,
     position: "absolute",
     zIndex: -1,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   bio: {
-    float: "right",
-    width: "135px",
+    minWidth: "135px",
   },
   name: {
     fontSize: "16pt",

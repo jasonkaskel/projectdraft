@@ -12,6 +12,15 @@ import actions from '../../actions'
 import PositionFilter from './PositionFilter'
 import SearchResults from './SearchResults'
 
+const styles = {
+  blankSearch: {
+    display: "inline-block",
+    width: "100%",
+    paddingRight: "1em",
+    marginBottom: 0,
+  }
+}
+
 class SearchAthletes extends Component {
   static propTypes = {
     searchTerm: PropTypes.string,
@@ -20,7 +29,7 @@ class SearchAthletes extends Component {
 
   renderBlankSearch() {
     return (
-      <FormGroup>
+      <FormGroup style={styles.blankSearch}>
         <InputGroup>
           <FormControl type="text" autoFocus
             onChange={(e) => this.props.setSearchTerm(e.target.value)}
