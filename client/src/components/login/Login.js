@@ -5,12 +5,11 @@ import asyncActions from '../../services'
 
 class Login extends Component {
   static propTypes = {
-    token: PropTypes.string,
     login: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
-    if (this.props.token) this.props.login(this.props.token)
+    if (this.props.location.query.token) this.props.login(this.props.location.query.token)
   }
 
   render() {
@@ -22,12 +21,8 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  token: ownProps.routeParams.token,
-})
-
 const mapDispatchToProps = (dispatch) => ({
   login: (token) => dispatch(asyncActions.login(token)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(null, mapDispatchToProps)(Login)

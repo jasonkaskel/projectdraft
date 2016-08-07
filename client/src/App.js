@@ -20,7 +20,7 @@ class App extends Component {
         <div className='App'>
           <Router history={browserHistory}>
             <Route path="/" component={DraftBoard} />
-            <Route path="/login/:token" component={Login} />
+            <Route path="/login" component={Login} />
             <Route path="/board" component={DraftBoard} />
             <Route path="/pick" component={DraftPick} />
           </Router>
