@@ -3,7 +3,7 @@ import actions from '../../actions'
 
 export const requestToken = (emailOrCell) => (dispatch, getState) => {
   dispatch(actions.requestTokenStart)
-  return xhr('post', {data: { email_or_cell: emailOrCell }})
+  return xhr('post', '/tokens', {data: { email_or_cell: emailOrCell }})
     .then(
       res => {
         dispatch(actions.requestTokenSuccess(res.data))
