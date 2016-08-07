@@ -53,7 +53,7 @@ post '/api/tokens' do
   # TODO: send text or email with token
 
   status 201
-  { token: token }.to_json
+  { token: token.value }.to_json
 end
 
 post '/api/sessions' do

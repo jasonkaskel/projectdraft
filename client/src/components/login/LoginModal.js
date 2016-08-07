@@ -12,15 +12,31 @@ class Login extends Component {
     emailOrCell: PropTypes.string,
     caller: PropTypes.object,
     showLogin: PropTypes.bool,
+    token: PropTypes.string,
     requestToken: PropTypes.func.isRequired,
     hideLogin: PropTypes.func.isRequired,
     setEmailOrCell: PropTypes.func.isRequired,
   }
 
+  handleKeyDown(evt) {
+    if (evt.keyCode === 13) {
+      evt.preventDefault()
+      this.props.requestToken(this.props.emailOrCell)
+    }
+  }
+
   render() {
-    const message = this.props.error ? (
+    let message = this.props.error ? (
       <Alert bsStyle="danger">{this.props.error}</Alert>
     ) : null
+
+    if ((0 || process.env.NODE_ENV === 'development') && !message && this.props.token) { // TODO: hook up postmark/twilio to send these links instead
+      message = (
+        <Alert bsStyle="success">
+          <a href={`http://projectdraft.dev:3000/login?token=${this.props.token}`}>Login</a>
+        </Alert>
+      )
+    }
 
     return (
       <Modal
@@ -36,12 +52,13 @@ class Login extends Component {
         </Modal.Header>
         <Modal.Body>
           {message}
-          <Form inline>
+          <Form inline onKeyDown={(e) => {this.handleKeyDown(e)}}>
             <FormGroup controlId="formInlineName">
               <ControlLabel>Enter Email or Cell Number</ControlLabel>
               {' '}
               <FormControl type="text" placeholder="Email or Cell Number"
-                onChange={(e) => {this.props.setEmailOrCell(e.target.value)}}/>
+                onChange={(e) => {this.props.setEmailOrCell(e.target.value)}}
+              />
             </FormGroup>
             {' '}
             <Button type="button"
@@ -61,6 +78,7 @@ const mapStateToProps = ({ login }, ownProps) => ({
   emailOrCell: login.emailOrCell,
   loginDisabled: login.loginDisabled,
   error: login.error,
+  token: login.token,
 })
 
 const mapDispatchToProps = (dispatch) => ({

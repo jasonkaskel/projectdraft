@@ -19,8 +19,7 @@ export const login = (token) => (dispatch, getState) => {
   return xhr('post', '/sessions', {data: { token }})
     .then(
       res => {
-        dispatch(actions.loginSuccess())
-        localStorage.setItem('Client-Access-Token', res.data.session)
+        dispatch(actions.loginSuccess(res.data))
       },
       err => {
         dispatch(actions.loginFailure(err))

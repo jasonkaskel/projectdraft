@@ -35,17 +35,21 @@ const login = (state = initialState, action) => {
         loginDisabled: false,
       }
     case 'LOGIN_START': {
+      localStorage.setItem('Client-Access-Token', '')
       return {
         ...state,
         isFetching: true,
-        error: null
+        error: null,
+        loggedIn: false,
       }
     }
     case 'LOGIN_SUCCESS': {
+      localStorage.setItem('Client-Access-Token', action.data.session)
       return {
         ...state,
         isFetching: false,
-        error: null
+        error: null,
+        loggedIn: true,
       }
     }
     case 'LOGIN_FAILURE': {
@@ -73,12 +77,6 @@ const login = (state = initialState, action) => {
       return {
         ...state,
         emailOrCell: action.emailOrCell,
-      }
-    }
-    case 'LOGIN': {
-      return {
-        ...state,
-        loggedIn: true
       }
     }
     default:
