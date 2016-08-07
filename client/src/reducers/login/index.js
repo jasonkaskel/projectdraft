@@ -30,7 +30,7 @@ const login = (state = initialState, action) => {
         ...state,
         isFetching: false,
         error: action.error.response.status === 404 ?
-          "Invalid or expired token" :
+          "Email or Cell not found" :
           "There was an error with your request",
         loginDisabled: false,
       }
