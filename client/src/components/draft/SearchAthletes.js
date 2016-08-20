@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { isEmpty } from 'lodash'
 import {
   Addon,
   FormGroup,
@@ -34,22 +33,7 @@ class SearchAthletes extends Component {
     setSearchTerm: PropTypes.func,
   }
 
-  renderBlankSearch() {
-    return (
-      <FormGroup style={styles.blankSearch}>
-        <InputGroup>
-          <FormControl type="text" autoFocus
-            onChange={(e) => this.props.setSearchTerm(e.target.value)}
-          />
-          <InputGroup.Addon>
-            <Glyphicon glyph="search" />
-          </InputGroup.Addon>
-        </InputGroup>
-      </FormGroup>
-    )
-  }
-
-  renderSearch() {
+  render() {
     return (
       <div style={styles.searchContainer}>
         <PositionFilter />
@@ -68,12 +52,6 @@ class SearchAthletes extends Component {
         <SearchResults />
       </div>
     )
-  }
-
-  render() {
-    return isEmpty(this.props.searchTerm) ?
-      this.renderBlankSearch() :
-      this.renderSearch()
   }
 
 }

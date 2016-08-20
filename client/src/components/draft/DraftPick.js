@@ -9,6 +9,7 @@ import { roundNumber, pickNumber, nextPickNumber } from '../../lib/draft'
 import AccountNav from '../account/AccountNav'
 import Athlete from './Athlete'
 import CurrentPick from './CurrentPick'
+import RoundHeader from './RoundHeader'
 
 const styles = {
   header: {
@@ -117,8 +118,7 @@ class DraftPick extends Component {
     const pastPicksContainerStyle = this.props.isPicking ?
       Object.assign({}, styles.pastPicksContainer, styles.pastPicksContainerWhilePicking) :
       styles.pastPicksContainer
-console.log('in DraftPick')
-console.log(this)
+
     return (
       <div>
         <AccountNav />
@@ -182,16 +182,3 @@ const mapStateToProps = ({ draft }) => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DraftPick)
-
-class RoundHeader extends Component {
-  render() {
-    return (
-      <th style={styles.picksHeaderCell}>
-        <div style={styles.picksHeaderContainer}>
-          <div>Round {this.props.roundNumber}</div>
-          <div>Pick {this.props.pickNumber}</div>
-        </div>
-      </th>
-    )
-  }
-}

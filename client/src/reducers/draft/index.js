@@ -1,5 +1,3 @@
-const DEFAULT_SEARCH_FILTERS = ["QB","WR","RB","TE","K","DEF"]
-
 const initialState = {
   isFetching: false,
   isMakingPick: false,
@@ -12,8 +10,8 @@ const initialState = {
   },
   team: null,
   athletes: null,
-  searchTerm: null,
-  searchFilters: DEFAULT_SEARCH_FILTERS,
+  searchTerm: '',
+  searchFilters: [],
   currentPick: null,
 }
 
@@ -110,8 +108,8 @@ const draft = (state = initialState, action) => {
         },
         athletes: splicePicksIntoAthletes(state.athletes, [action.data.pick]),
         currentPick: null,
-        searchTerm: null,
-        searchFilters: DEFAULT_SEARCH_FILTERS
+        searchTerm: '',
+        searchFilters: [],
       }
     case 'MAKE_PICK_FAILURE':
       return {
