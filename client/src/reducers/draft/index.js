@@ -4,6 +4,7 @@ const initialState = {
   isFetching: false,
   isMakingPick: false,
   makePickError: null,
+  drafts: [],
   draft: {
     teams: [],
     picks: [],
@@ -45,6 +46,26 @@ const draft = (state = initialState, action) => {
         athletes: splicePicksIntoAthletes(state.athletes, action.data.draft.picks)
       }
     case 'FETCH_DRAFT_FAILURE':
+      return {
+        ...state,
+        error: action.error.response.status === 401 ?
+          null :
+          "There was an error with your request"
+      }
+    case 'FETCH_DRAFTS_START':
+      return {
+        ...state,
+        isFetching: true,
+        error: null
+      }
+    case 'FETCH_DRAFTS_SUCCESS':
+      return {
+        ...state,
+        isFetching: false,
+        error: null,
+        drafts: action.data.drafts,
+      }
+    case 'FETCH_DRAFTS_FAILURE':
       return {
         ...state,
         error: action.error.response.status === 401 ?

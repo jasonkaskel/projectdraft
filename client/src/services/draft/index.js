@@ -1,9 +1,9 @@
 import { xhr } from '../../services'
 import actions from '../../actions'
 
-export const fetchDraft = () => (dispatch, getState) => {
+export const fetchDraft = (draft_id) => (dispatch, getState) => {
   dispatch(actions.fetchDraftStart)
-  return xhr('get', '/hc_draft')
+  return xhr('get', `/drafts/${draft_id}`)
     .then(
       res => {
         dispatch(actions.fetchDraftSuccess(res.data))
@@ -11,6 +11,20 @@ export const fetchDraft = () => (dispatch, getState) => {
       err => {
         if (err.response.status === 401) dispatch(actions.showLogin())
         dispatch(actions.fetchDraftFailure(err))
+      }
+    )
+}
+
+export const fetchDrafts = () => (dispatch, getState) => {
+  dispatch(actions.fetchDraftsStart)
+  return xhr('get', '/drafts')
+    .then(
+      res => {
+        dispatch(actions.fetchDraftsSuccess(res.data))
+      },
+      err => {
+        if (err.response.status === 401) dispatch(actions.showLogin())
+        dispatch(actions.fetchDraftsFailure(err))
       }
     )
 }

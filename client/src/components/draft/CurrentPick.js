@@ -19,33 +19,29 @@ class CurrentPick extends Component {
 
   renderConfirmPick() {
     return (
-      <td>
-        <div>
-          <Athlete athlete={this.props.currentPick} />
-          <Button
-            className={cx({disabled: this.props.isMakingPick})}
-            onClick={(e) => this.props.makePick(this.props.currentPick, this.props.currentTeam)}
-          >
-            Set Pick
-          </Button>
-          <Button
-            className={cx({disabled: this.props.isMakingPick})}
-            onClick={(e) => this.props.clearCurrentPick()}
-          >
-            Cancel
-          </Button>
-        </div>
-      </td>
+      <div>
+        <Athlete athlete={this.props.currentPick} />
+        <Button
+          className={cx({disabled: this.props.isMakingPick})}
+          onClick={(e) => this.props.makePick(this.props.currentPick, this.props.currentTeam)}
+        >
+          Set Pick
+        </Button>
+        <Button
+          className={cx({disabled: this.props.isMakingPick})}
+          onClick={(e) => this.props.clearCurrentPick()}
+        >
+          Cancel
+        </Button>
+      </div>
     )
   }
 
   renderSearch() {
     return (
-      <td>
-        <SearchAthletes
-          key={`SearchAthletes--${this.props.currentTeam.id}`}
-        />
-      </td>
+      <SearchAthletes
+        key={`SearchAthletes--${this.props.currentTeam.id}`}
+      />
     )
   }
 

@@ -13,6 +13,7 @@ class Login extends Component {
     caller: PropTypes.object,
     showLogin: PropTypes.bool,
     token: PropTypes.string,
+    tokenCreated: PropTypes.bool.isRequired,
     requestToken: PropTypes.func.isRequired,
     hideLogin: PropTypes.func.isRequired,
     setEmailOrCell: PropTypes.func.isRequired,
@@ -25,18 +26,44 @@ class Login extends Component {
     }
   }
 
-  render() {
-    let message = this.props.error ? (
-      <Alert bsStyle="danger">{this.props.error}</Alert>
-    ) : null
-
-    if ((0 || process.env.NODE_ENV === 'development') && !message && this.props.token) { // TODO: hook up postmark/twilio to send these links instead
+  renderSuccess() {
+    let message = "A link to login has been sent to your email or cell phone"
+    if (1 || process.env.NODE_ENV === 'development') { // TODO: hook up postmark/twilio to send these links instead
       message = (
-        <Alert bsStyle="success">
-          <a href={`http://projectdraft.dev:3000/login?token=${this.props.token}`}>Login</a>
-        </Alert>
+        <a href={`http://projectdraft.dev:3000/login?token=${this.props.token}`}>Login</a>
       )
     }
+
+    return (
+      <Alert bsStyle="success">{message}</Alert>
+    )
+  }
+
+  renderForm() {
+    return (
+      <Form inline onKeyDown={(e) => {this.handleKeyDown(e)}}>
+        <FormGroup controlId="formInlineName">
+          <ControlLabel>Enter Email or Cell Number</ControlLabel>
+          {' '}
+          <FormControl type="text" placeholder="Email or Cell Number"
+            onChange={(e) => {this.props.setEmailOrCell(e.target.value)}}
+          />
+        </FormGroup>
+        {' '}
+        <Button type="button"
+          onClick={(e) => {this.props.requestToken(this.props.emailOrCell)}}
+        >
+          Send Login Link
+        </Button>
+      </Form>
+    )
+  }
+
+  render() {
+    const message = this.props.error ? (
+      <Alert bsStyle="danger">{this.props.error}</Alert>
+    ) : null
+    const modalContent = this.props.tokenCreated ? this.renderSuccess() : this.renderForm()
 
     return (
       <Modal
@@ -52,21 +79,7 @@ class Login extends Component {
         </Modal.Header>
         <Modal.Body>
           {message}
-          <Form inline onKeyDown={(e) => {this.handleKeyDown(e)}}>
-            <FormGroup controlId="formInlineName">
-              <ControlLabel>Enter Email or Cell Number</ControlLabel>
-              {' '}
-              <FormControl type="text" placeholder="Email or Cell Number"
-                onChange={(e) => {this.props.setEmailOrCell(e.target.value)}}
-              />
-            </FormGroup>
-            {' '}
-            <Button type="button"
-              onClick={(e) => {this.props.requestToken(this.props.emailOrCell)}}
-            >
-              Send Login Link
-            </Button>
-          </Form>
+          {modalContent}
         </Modal.Body>
       </Modal>
     )
@@ -78,7 +91,8 @@ const mapStateToProps = ({ login }, ownProps) => ({
   emailOrCell: login.emailOrCell,
   loginDisabled: login.loginDisabled,
   error: login.error,
-  token: login.token,
+  token: login.token, // TODO: remove in prod!
+  tokenCreated: login.tokenCreated,
 })
 
 const mapDispatchToProps = (dispatch) => ({

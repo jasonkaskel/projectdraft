@@ -99,7 +99,35 @@ post '/api/picks' do
     number: draft.current_pick
 
   status 201
-  { pick: pick }.to_json
+  { pick: pick.as_json.merge(athlete: pick.athlete) }.to_json
+end
+
+get '/api/drafts' do
+  teams = Team.all.select { |team| team.manager_ids.include?(@manager.id) }
+  # teams = Team.where(manager_ids: @manager.id) FIXME
+  drafts = teams.map { |team| team.draft }.uniq
+
+  status 200
+  { drafts: drafts }.to_json
+end
+
+get '/api/drafts/:draft_id' do
+  draft = Draft.find(params.fetch('draft_id'))
+  picks = Pick.includes(:athlete).where(draft: draft).order(number: :asc)
+  teams = Team.where(draft: draft)
+
+  status 200
+  content_type :json
+  {
+    draft: {
+      type: "snake",
+      total_rounds: draft.total_rounds,
+      teams: teams,
+      picks: picks.map { |p| p.as_json.merge(athlete: p.athlete.as_json) },
+      on_the_clock: teams.detect { |t| t === draft.current_team },
+      can_pick: @manager.has_next_pick?(draft)
+    }
+  }.to_json
 end
 
 get '/api/hc_draft' do

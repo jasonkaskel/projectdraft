@@ -24,14 +24,14 @@ class DraftBoard extends Component {
     makePick: PropTypes.func.isRequired,
   }
 
-  fetchDraft() {
-    const fetchAgain = () => { delay(() => { this.fetchDraft() }, 8000) }
-    this.props.fetchDraft()
+  fetchDraft(draft_id) {
+    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, 8000) }
+    this.props.fetchDraft(draft_id)
       .then(fetchAgain, fetchAgain)
   }
 
   componentDidMount() {
-    this.fetchDraft()
+    this.fetchDraft(this.props.routeParams.draft_id)
   }
 
   picksToRounds(draft) {
@@ -135,7 +135,7 @@ const mapStateToProps = ({ draft }) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchDraft: () => dispatch(asyncActions.fetchDraft()),
+  fetchDraft: (draft_id) => dispatch(asyncActions.fetchDraft(draft_id)),
   getDraft: () => dispatch(actions.getDraft()),
   makePick: (picks, pick) => dispatch(actions.makePick(picks, pick)),
 })

@@ -18,6 +18,13 @@ const styles = {
     width: "100%",
     paddingRight: "1em",
     marginBottom: 0,
+    fontSize: 16,
+  },
+  searchContainer: {
+    width: "100%",
+  },
+  searchBox: {
+    fontSize: 16,
   }
 }
 
@@ -44,9 +51,9 @@ class SearchAthletes extends Component {
 
   renderSearch() {
     return (
-      <div>
+      <div style={styles.searchContainer}>
         <PositionFilter />
-        <FormGroup>
+        <FormGroup style={styles.searchBox}>
           <InputGroup>
             <FormControl type="text" autoFocus
               ref="searchInput"

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { delay } from 'lodash'
+import { delay, isEmpty } from 'lodash'
 import { Alert, Well } from 'react-bootstrap'
 
 import actions from '../../actions'
@@ -15,9 +15,12 @@ const styles = {
   },
   pastPicksContainer: {
     display: "block",
-    height: 450, // TODO make responsive
+    height: 275, // TODO make responsive
     overflowY: "auto",
     overflowX: "hidden",
+  },
+  pastPicksContainerWhilePicking: {
+    height: 150,
   },
   nextPickContainer: {
     display: "block",
@@ -27,8 +30,12 @@ const styles = {
     marginTop: "1em",
     marginLeft: "1em",
     marginRight: "1em",
-    paddingTop: "1em",
+    paddingTop: ".5em",
     paddingBottom: "1em",
+  },
+  nextPick: {
+    width: "90%",
+    margin: "0 auto",
   },
   pickContainer: {
     width: "100%",
@@ -50,17 +57,18 @@ class DraftPick extends Component {
   static propTypes = {
     draft: PropTypes.object,
     error: PropTypes.string,
+    isPicking: PropTypes.bool.isRequired,
     fetchDraft: PropTypes.func.isRequired,
   }
 
-  fetchDraft() {
-    const fetchAgain = () => { delay(() => { this.fetchDraft() }, 8000) }
-    this.props.fetchDraft()
+  fetchDraft(draft_id) {
+    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, 8000) }
+    this.props.fetchDraft(draft_id)
       .then(fetchAgain, fetchAgain)
   }
 
   componentDidMount() {
-    this.fetchDraft()
+    this.fetchDraft(this.props.routeParams.draft_id)
   }
 
   positionsForTeam(teamPicks) {
@@ -101,12 +109,13 @@ class DraftPick extends Component {
     const currentPick = draft.can_pick ? (
       <CurrentPick currentTeam={currentTeam} />
     ) : (
-      <td>
-        <div>
-          <em>Awaiting Selection</em>
-        </div>
-      </td>
+      <div>
+        <em>Awaiting Selection</em>
+      </div>
     )
+    const pastPicksContainerStyle = this.props.isPicking ?
+      Object.assign({}, styles.pastPicksContainer, styles.pastPicksContainerWhilePicking) :
+      styles.pastPicksContainer
 
     return (
       <div>
@@ -124,7 +133,7 @@ class DraftPick extends Component {
         {error}
         <div className="DraftPick--picksSoFar">
           <table style={styles.picksContainer}>
-            <tbody style={styles.pastPicksContainer}>
+            <tbody style={pastPicksContainerStyle}>
               {teamPicks.map(pick =>
                 <tr key={pick.id}>
                   <RoundHeader
@@ -140,16 +149,11 @@ class DraftPick extends Component {
                 </tr>
               )}
             </tbody>
-            <tfoot style={styles.nextPickContainer}>
-              <tr>
-                <RoundHeader
-                  roundNumber={roundNumber(lastPick.number, teamCount) + 1}
-                  pickNumber={nextPick}
-                />
-                {currentPick}
-              </tr>
-            </tfoot>
           </table>
+          <div style={styles.nextPickContainer}>
+            <h5>Round {roundNumber(lastPick.number, teamCount) + 1}; Pick {nextPick}</h5>
+            <div style={styles.nextPick}>{currentPick}</div>
+          </div>
         </div>
       </div>
     )
@@ -164,13 +168,14 @@ class DraftPick extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchDraft: () => dispatch(asyncActions.fetchDraft()),
+  fetchDraft: (draft_id) => dispatch(asyncActions.fetchDraft(draft_id)),
   makePick: (picks, pick) => dispatch(actions.makePick(picks, pick)),
 })
 
 const mapStateToProps = ({ draft }) => ({
   draft: draft.draft,
   error: draft.makePickError,
+  isPicking: !!(!isEmpty(draft.searchTerm) || draft.currentPick),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DraftPick)

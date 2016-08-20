@@ -5,6 +5,15 @@ import cx from 'classnames'
 
 import actions from '../../actions'
 
+const styles = {
+  filterButtonGroup: {
+    width: "100%",
+  },
+  filterButton: {
+    width: "16.9%",
+  },
+}
+
 class PositionFilter extends Component {
 
   static propTypes = {
@@ -24,12 +33,13 @@ class PositionFilter extends Component {
     const positions = this.currentPositions(this.props.filters)
 
     return (
-      <ButtonGroup>
+      <ButtonGroup style={styles.filterButtonGroup}>
         {positions.map(p => {
           return (
             <Button
               key={`PositionFilter--${p.position}`}
               className={cx("btn-sm", {"disabled": !p.on})}
+              style={styles.filterButton}
               onClick={(e) => this.props.updateSearchFilters(p.position, !p.on)}
             >
               {p.position}

@@ -12,6 +12,20 @@ export const fetchDraftFailure = (error) => ({
   error
 })
 
+export const fetchDraftsStart = () => ({
+  type: 'FETCH_DRAFTS_START'
+})
+
+export const fetchDraftsSuccess = (data) => ({
+  type: 'FETCH_DRAFTS_SUCCESS',
+  data
+})
+
+export const fetchDraftsFailure = (error) => ({
+  type: 'FETCH_DRAFTS_FAILURE',
+  error
+})
+
 export const fetchAthletesStart = () => ({
   type: 'FETCH_ATHLETE_START'
 })

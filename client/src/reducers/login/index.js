@@ -3,6 +3,7 @@ const initialState = {
   isFetching: false,
   error: null,
   token: null,
+  tokenCreated: false,
   loggedIn: false,
   showLogin: false,
   loginDisabled: false,
@@ -16,6 +17,7 @@ const login = (state = initialState, action) => {
         isFetching: true,
         error: null,
         loginDisabled: true,
+        tokenCreated: false,
       }
     case 'REQUEST_TOKEN_SUCCESS':
       return {
@@ -23,6 +25,7 @@ const login = (state = initialState, action) => {
         isFetching: false,
         error: null,
         token: action.data.token, // TODO: just for dev purposes
+        tokenCreated: true,
         loginDisabled: false,
       }
     case 'REQUEST_TOKEN_FAILURE':
@@ -33,6 +36,7 @@ const login = (state = initialState, action) => {
           "Email or Cell not found" :
           "There was an error with your request",
         loginDisabled: false,
+        tokenCreated: false,
       }
     case 'LOGIN_START': {
       localStorage.setItem('Client-Access-Token', '')
