@@ -18,4 +18,8 @@ class Manager < ActiveRecord::Base
   def teams(draft)
     draft.teams.where("manager_ids @> ARRAY[#{id}]")
   end
+
+  def owner_of
+    Team.find_by(owner: self)
+  end
 end

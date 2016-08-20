@@ -126,7 +126,8 @@ get '/api/drafts/:draft_id' do
       picks: picks.map { |p| p.as_json.merge(athlete: p.athlete.as_json) },
       on_the_clock: teams.detect { |t| t === draft.current_team },
       can_pick: @manager.has_next_pick?(draft)
-    }
+    },
+    team: @manager.owner_of
   }.to_json
 end
 

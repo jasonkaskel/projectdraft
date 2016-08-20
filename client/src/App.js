@@ -16,7 +16,6 @@ let store = createStore(appStore, applyMiddleware(thunk))
 
 class App extends Component {
   render() {
-    console.log(this)
     return (
       <Provider store={store}>
         <div className='App'>

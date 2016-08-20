@@ -10,6 +10,7 @@ const initialState = {
     picks: [],
     total_rounds: 15,
   },
+  team: null,
   athletes: null,
   searchTerm: null,
   searchFilters: DEFAULT_SEARCH_FILTERS,
@@ -43,6 +44,7 @@ const draft = (state = initialState, action) => {
         isFetching: false,
         error: null,
         draft: action.data.draft,
+        team: action.data.team,
         athletes: splicePicksIntoAthletes(state.athletes, action.data.draft.picks)
       }
     case 'FETCH_DRAFT_FAILURE':
