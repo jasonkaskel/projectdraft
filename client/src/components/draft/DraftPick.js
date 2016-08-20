@@ -117,7 +117,8 @@ class DraftPick extends Component {
     const pastPicksContainerStyle = this.props.isPicking ?
       Object.assign({}, styles.pastPicksContainer, styles.pastPicksContainerWhilePicking) :
       styles.pastPicksContainer
-
+console.log('in DraftPick')
+console.log(this)
     return (
       <div>
         <AccountNav />
