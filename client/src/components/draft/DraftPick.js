@@ -6,6 +6,7 @@ import { Alert, Well } from 'react-bootstrap'
 import actions from '../../actions'
 import asyncActions from '../../services'
 import { roundNumber, pickNumber, nextPickNumber } from '../../lib/draft'
+import AccountNav from '../account/AccountNav'
 import Athlete from './Athlete'
 import CurrentPick from './CurrentPick'
 
@@ -119,6 +120,7 @@ class DraftPick extends Component {
 
     return (
       <div>
+        <AccountNav />
         <div style={styles.header}>
           <h4>On the Clock: {currentTeam.name}</h4>
           <Well bsSize="small">
