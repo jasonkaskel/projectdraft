@@ -27,6 +27,9 @@ GEM
     method_source (0.8.2)
     minitest (5.9.0)
     pg (0.18.4)
+    postmark (1.8.1)
+      json
+      rake
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -69,6 +72,7 @@ DEPENDENCIES
   byebug
   json
   pg
+  postmark
   pry
   puma
   rack-contrib
@@ -77,6 +81,9 @@ DEPENDENCIES
   sinatra
   sinatra-activerecord
   sinatra-param
+
+RUBY VERSION
+   ruby 2.2.5p319
 
 BUNDLED WITH
    1.12.5
