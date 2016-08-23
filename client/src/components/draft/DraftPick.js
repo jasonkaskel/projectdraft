@@ -6,7 +6,6 @@ import { Alert, Well } from 'react-bootstrap'
 import actions from '../../actions'
 import asyncActions from '../../services'
 import { roundNumber, pickNumber, nextPickNumber } from '../../lib/draft'
-import AccountNav from '../account/AccountNav'
 import Athlete from './Athlete'
 import CurrentPick from './CurrentPick'
 import RoundHeader from './RoundHeader'
@@ -53,6 +52,12 @@ const styles = {
     marginLeft: "1em",
     marginRight: "1em",
   },
+  sufficientCount: {
+    color: "green",
+  },
+  deficientCount: {
+    color: "red",
+  },
 }
 
 class DraftPick extends Component {
@@ -73,23 +78,6 @@ class DraftPick extends Component {
     this.fetchDraft(this.props.routeParams.draft_id)
   }
 
-  positionsForTeam(teamPicks) {
-    return teamPicks.reduce(function(positions, pick) {
-      let position = pick.athlete.position
-      return {
-        ...positions,
-        [position]: positions[position]+1
-      }
-    }, {
-      QB: 0,
-      WR: 0,
-      RB: 0,
-      TE: 0,
-      K: 0,
-      DEF: 0
-    })
-  }
-
   renderBlank() {
     return (
       <div className="error">
@@ -100,11 +88,10 @@ class DraftPick extends Component {
 
   renderPick(draft) {
     const teamCount = draft.teams.length
-    const currentTeam = draft.on_the_clock
+    const currentTeam = draft.can_pick ? draft.on_the_clock : this.props.team
     const teamPicks = draft.picks.filter(pick => pick.team_id === currentTeam.id)
     const lastPick = teamPicks[teamPicks.length-1]
     const nextPick = nextPickNumber(draft.picks, teamCount)
-    const positionsForTeam = this.positionsForTeam(teamPicks)
     const error = this.props.error ? (
       <Alert bsStyle="danger">{this.props.error}</Alert>
     ) : null
@@ -112,7 +99,7 @@ class DraftPick extends Component {
       <CurrentPick currentTeam={currentTeam} />
     ) : (
       <div>
-        <em>Awaiting Selection</em>
+        <em>On the Clock: {draft.on_the_clock.name}</em>
       </div>
     )
     const pastPicksContainerStyle = this.props.isPicking ?
@@ -121,17 +108,12 @@ class DraftPick extends Component {
 
     return (
       <div>
-        <AccountNav />
         <div style={styles.header}>
-          <h4>On the Clock: {currentTeam.name}</h4>
-          <Well bsSize="small">
-            {positionsForTeam["QB"]} QB &bull;&nbsp;
-            {positionsForTeam["RB"]} RB &bull;&nbsp;
-            {positionsForTeam["WR"]} WR &bull;&nbsp;
-            {positionsForTeam["TE"]} TE &bull;&nbsp;
-            {positionsForTeam["K"]} TE &bull;&nbsp;
-            {positionsForTeam["DEF"]} DEF
-          </Well>
+          <h4>{currentTeam.name}</h4>
+          <PositionSummary
+            picks={teamPicks}
+            positions={draft.positions}
+          />
         </div>
         {error}
         <div className="DraftPick--picksSoFar">
@@ -177,8 +159,49 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = ({ draft }) => ({
   draft: draft.draft,
+  team: draft.team,
   error: draft.makePickError,
   isPicking: !!(!isEmpty(draft.searchTerm) || draft.currentPick),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DraftPick)
+
+class PositionSummary extends React.Component {
+  counts(teamPicks) {
+    return teamPicks.reduce(function(positions, pick) {
+      let position = pick.athlete.position
+      return {
+        ...positions,
+        [position]: positions[position]+1
+      }
+    }, {
+      QB: 0,
+      WR: 0,
+      RB: 0,
+      TE: 0,
+      K: 0,
+      DEF: 0
+    })
+  }
+
+  render() {
+    const { picks, positions } = this.props
+    const counts = this.counts(picks)
+
+    return (
+      <Well bsSize="small">
+        {Object.keys(positions).map((position, i) => {
+          return (
+            <span
+              key={`position-${position}`}
+              style={counts[position] >= positions[position] ? styles.sufficientCount : styles.deficientCount}
+            >
+              {`${counts[position]} ${position}`}
+              {i+1 < Object.keys(positions).length ? ' • ' : null}
+            </span>
+          )
+        })}
+      </Well>
+    )
+  }
+}

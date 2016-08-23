@@ -1,6 +1,7 @@
-export const roundNumber = (pickNum, teamSize) => (
-  Math.floor(pickNum / teamSize) + 1
-)
+export const roundNumber = (pickNum, teamSize) => {
+  const round = Math.floor(pickNum / teamSize)
+  return round === (pickNum / teamSize) ? round : round + 1
+}
 
 export const pickNumber = (pickNum, teamSize) => {
   const pick = pickNum % teamSize

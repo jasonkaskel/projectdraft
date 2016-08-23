@@ -15,7 +15,7 @@ class Login extends Component {
 
   redirectWhenLoggedIn() {
     if (this.props.loggedIn) {
-      this.context.router.push('/pick')
+      this.context.router.push('/')
     }
   }
 

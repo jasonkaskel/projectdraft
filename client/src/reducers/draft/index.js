@@ -7,6 +7,7 @@ const initialState = {
     teams: [],
     picks: [],
     total_rounds: 15,
+    positions: {},
   },
   team: null,
   athletes: null,
@@ -104,7 +105,9 @@ const draft = (state = initialState, action) => {
         makePickError: null,
         draft: {
           ...state.draft,
-          picks: state.draft.picks.concat([action.data.pick])
+          picks: state.draft.picks.concat([action.data.pick]),
+          on_the_clock: action.data.on_the_clock,
+          can_pick: action.data.can_pick,
         },
         athletes: splicePicksIntoAthletes(state.athletes, [action.data.pick]),
         currentPick: null,

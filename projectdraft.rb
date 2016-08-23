@@ -99,7 +99,11 @@ post '/api/picks' do
     number: draft.current_pick
 
   status 201
-  { pick: pick.as_json.merge(athlete: pick.athlete) }.to_json
+  {
+    pick: pick.as_json.merge(athlete: pick.athlete),
+    on_the_clock: draft.current_team,
+    can_pick: @manager.has_next_pick?(draft)
+  }.to_json
 end
 
 get '/api/drafts' do
@@ -124,65 +128,18 @@ get '/api/drafts/:draft_id' do
       total_rounds: draft.total_rounds,
       teams: teams,
       picks: picks.map { |p| p.as_json.merge(athlete: p.athlete.as_json) },
+      positions: {
+        "QB"  => 2,
+        "RB"  => 2,
+        "WR"  => 2,
+        "TE"  => 1,
+        "K"   => 1,
+        "DEF" => 1,
+      },
       on_the_clock: teams.detect { |t| t === draft.current_team },
       can_pick: @manager.has_next_pick?(draft)
     },
     team: @manager.owner_of
-  }.to_json
-end
-
-get '/api/hc_draft' do
-  player_ids = (1..500).to_a.sample(12)
-  draft = Draft.find_or_create_by(name: 'Special Teams 2016')
-  teams = [
-      { name: "Reigning Chumps" },
-      { name: "King of the Losers" },
-      { name: "Troy's Swag Team" },
-      { name: "Roger's Team" },
-      { name: "ADHD" },
-      { name: "Chinky Winkies" },
-      { name: "Boynton Big Timmers" },
-      { name: "Joe Knows" },
-      { name: "Bit of a Pickle" },
-      { name: "Oh Baby Baby Baby" },
-    ].map { |t| Team.find_or_create_by(name: t[:name], draft: draft) }
-
-  picks = Pick.includes(:athlete).where(draft: draft).order(number: :asc)
-  while picks.length < 62
-    round = picks.length / teams.length + 1
-    pick = picks.length % teams.length
-    nextTeam =
-      if round % 2 == 1
-        teams[pick]
-      else
-        teams[teams.length-1-pick]
-      end
-    athlete = nil
-    loop do
-      athlete = Athlete.where('average_draft_position < 150').sample
-      break if Pick.find_by(athlete: athlete).nil?
-    end
-
-    Pick.create! \
-      number: draft.current_pick,
-      team: nextTeam,
-      draft: draft,
-      athlete: athlete
-
-    picks = Pick.includes(:athlete).where(draft: draft)
-  end
-
-  status 200
-  content_type :json
-  {
-    draft: {
-      type: "snake",
-      total_rounds: draft.total_rounds,
-      teams: teams,
-      picks: picks.map { |p| p.as_json.merge(athlete: p.athlete.as_json) },
-      on_the_clock: teams.detect { |t| t === draft.current_team },
-      can_pick: @manager.has_next_pick?(draft)
-    }
   }.to_json
 end
 

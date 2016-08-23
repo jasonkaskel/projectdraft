@@ -10,7 +10,7 @@ const styles = {
     width: "100%",
   },
   filterButton: {
-    width: "16.9%",
+    width: "16.7%",
   },
 }
 

@@ -42,6 +42,9 @@ const styles = {
     fontWeight: "bold",
     paddingTop: "10px",
   },
+  nameSmall: {
+    fontSize: "12pt",
+  },
   teamBye: {
     fontSize: "10pt",
   },
@@ -66,6 +69,9 @@ export default class Athlete extends Component {
     const PositionMaskStyle = {
       background: `url('${athlete.photo_url}') ${POSITION_COLORS[athlete.position]}`
     }
+    const athleteName = athlete.name.length < 12 ?
+      athlete.name :
+      athlete.short_name
 
     return (
       <div style={styles.playerCard}>
@@ -74,10 +80,8 @@ export default class Athlete extends Component {
             <div style={Object.assign({}, styles.photo, PositionMaskStyle)}></div>
           </div>
           <div style={styles.bio} className="clearfixAfter">
-            <div style={styles.name}>
-              { athlete.name.length < 12 ?
-                athlete.name :
-                athlete.short_name }
+            <div style={Object.assign({}, styles.name, athleteName.length > 12 ? styles.nameSmall : {})}>
+              {athleteName}
             </div>
             <div style={styles.teamBye}>
               {athlete.team} - Bye Week {athlete.bye_week }
