@@ -3,6 +3,7 @@ require 'json'
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/param'
+require 'postmark'
 
 require './models/athlete'
 require './models/draft'
@@ -12,6 +13,10 @@ require './models/team'
 require './models/token'
 
 set :root, File.dirname(__FILE__)
+
+configure do
+  set :mailer, Postmark::ApiClient.new(ENV['POSTMARK_API_KEY'])
+end
 
 if development?
   before do
@@ -146,4 +151,13 @@ end
 def noauth_allowed?
   request.options? ||
     (request.post? && %w(tokens sessions).map { |r| "/api/#{r}" }.include?(request.path_info))
+end
+
+def email_login_token(to:, token:)
+  settings.mailer.deliver(
+    from: 'noreply@projectdraft.com',
+    to: to,
+    subject: 'Your login link',
+    text_body: "Click here to login: <a href='https://projectdraft.herokuapp.com/login?token=#{token}'>Login</a>"
+  )
 end

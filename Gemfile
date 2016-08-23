@@ -11,6 +11,7 @@ gem 'sinatra-activerecord'
 gem 'activerecord'
 gem 'activesupport'
 gem 'pg'
+gem 'postmark'
 
 group :deployment do
   gem 'puma'
