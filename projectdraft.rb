@@ -158,7 +158,7 @@ end
 
 def email_login_token(to:, token:)
   settings.mailer.deliver(
-    from: 'noreply@projectdraft.com',
+    from: ENV['POSTMARK_SENDER_SIGNATURE'],
     to: to,
     subject: 'Your login link',
     text_body: "Click here to login: <a href='https://projectdraft.herokuapp.com/login?token=#{token}'>Login</a>"
