@@ -55,7 +55,7 @@ post '/api/tokens' do
     manager: manager,
     expires_at: 10.minutes.from_now
 
-  unless env.development?
+  unless settings.development?
     email_login_token(to: manager.email, token: token.value) if manager.email
   # TODO: send text or email with token
   end
