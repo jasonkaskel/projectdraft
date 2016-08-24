@@ -145,7 +145,7 @@ get '/api/drafts/:draft_id' do
         "K"   => 1,
         "DEF" => 1,
       },
-      on_the_clock: teams.detect { |t| t === draft.current_team },
+      on_the_clock: draft.current_team,
       can_pick: @manager.has_next_pick?(draft)
     },
     team: @manager.owner_of

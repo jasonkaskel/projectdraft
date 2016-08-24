@@ -8,7 +8,7 @@ class Draft < ActiveRecord::Base
   has_many :picks
 
   def current_pick
-    (last_pick_number|| 0) + 1
+    (last_pick_number || 0) + 1
   end
 
   def last_pick_number
@@ -16,7 +16,7 @@ class Draft < ActiveRecord::Base
   end
 
   def current_team
-    num_picks = last_pick_number
+    num_picks = last_pick_number || 0
     num_teams = teams.size
     max_picks = total_rounds * num_teams
     return nil if num_picks >= max_picks
