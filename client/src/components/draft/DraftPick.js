@@ -136,7 +136,7 @@ class DraftPick extends Component {
             </tbody>
           </table>
           <div style={styles.nextPickContainer}>
-            <h5>Round {roundNumber(lastPick.number, teamCount) + 1}; Pick {nextPick}</h5>
+            <h5>Round {roundNumber(lastPick.number+1, teamCount)}; Pick {nextPick}</h5>
             <div style={styles.nextPick}>{currentPick}</div>
           </div>
         </div>
