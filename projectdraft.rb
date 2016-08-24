@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/param'
 require 'postmark'
+require 'twilio-ruby'
 
 require './models/athlete'
 require './models/draft'
@@ -57,7 +58,7 @@ post '/api/tokens' do
 
   unless settings.development?
     email_login_token(to: manager.email, token: token.value) if manager.email
-  # TODO: send text or email with token
+    sms_login_token(to: manager.cell, token: token.value) if manager.cell
   end
 
   status 201
@@ -161,6 +162,15 @@ def email_login_token(to:, token:)
     from: ENV['POSTMARK_SENDER_SIGNATURE'],
     to: to,
     subject: 'Your login link',
-    text_body: "Click here to login: <a href='https://projectdraft.herokuapp.com/login?token=#{token}'>Login</a>"
+    text_body: "Click <a href='#{ENV['SITE_URL']}/login?token=#{token}'>here to login</a>"
+  )
+end
+
+def sms_login_token(to:, token:)
+  client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
+  client.messages.create(
+    from: "+#{ENV['TWILIO_PHONE_NUMBER']}",
+    to: "+1#{to}",
+    body: "#{ENV['SITE_URL']}/login?token=#{token}"
   )
 end

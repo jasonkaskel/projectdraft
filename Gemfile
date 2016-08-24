@@ -12,6 +12,7 @@ gem 'activerecord'
 gem 'activesupport'
 gem 'pg'
 gem 'postmark'
+gem 'twilio-ruby'
 
 group :deployment do
   gem 'puma'
