@@ -162,7 +162,7 @@ def email_login_token(to:, token:)
     from: ENV['POSTMARK_SENDER_SIGNATURE'],
     to: to,
     subject: 'Your login link',
-    text_body: "Click <a href='#{ENV['SITE_URL']}/login?token=#{token}'>here to login</a>"
+    text_body: "#{ENV['SITE_URL']}/login?token=#{token}"
   )
 end
 
