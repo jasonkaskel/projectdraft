@@ -6,6 +6,7 @@ import actions from '../../actions'
 import asyncActions from '../../services'
 import Athlete from './Athlete'
 import FootballField from '../../assets/football-field.jpg'
+import { REFETCH_DELAY } from '../../constants'
 
 const styles = {
   container: {
@@ -38,8 +39,6 @@ const styles = {
   },
 }
 
-const FETCH_DELAY = 2000
-
 class DraftBoard extends Component {
   static propTypes = {
     draft: PropTypes.object,
@@ -48,7 +47,7 @@ class DraftBoard extends Component {
   }
 
   fetchDraft(draft_id) {
-    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, FETCH_DELAY) }
+    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, REFETCH_DELAY) }
     this.props.fetchDraft(draft_id)
       .then(fetchAgain, fetchAgain)
   }

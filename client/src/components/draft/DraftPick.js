@@ -9,6 +9,7 @@ import { roundNumber, pickNumber, nextPickNumber } from '../../lib/draft'
 import Athlete from './Athlete'
 import CurrentPick from './CurrentPick'
 import RoundHeader from './RoundHeader'
+import { REFETCH_DELAY } from '../../constants'
 
 const styles = {
   header: {
@@ -69,7 +70,7 @@ class DraftPick extends Component {
   }
 
   fetchDraft(draft_id) {
-    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, 8000) }
+    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, REFETCH_DELAY) }
     this.props.fetchDraft(draft_id)
       .then(fetchAgain, fetchAgain)
   }
