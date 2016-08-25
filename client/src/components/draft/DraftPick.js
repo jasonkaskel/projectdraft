@@ -91,7 +91,7 @@ class DraftPick extends Component {
     const teamCount = draft.teams.length
     const currentTeam = draft.can_pick ? draft.on_the_clock : this.props.team
     const teamPicks = draft.picks.filter(pick => pick.team_id === currentTeam.id)
-    const lastPick = teamPicks[teamPicks.length-1]
+    const lastPick = teamPicks[teamPicks.length-1] || {number: 0}
     const nextPick = nextPickNumber(draft.picks, teamCount)
     const error = this.props.error ? (
       <Alert bsStyle="danger">{this.props.error}</Alert>
