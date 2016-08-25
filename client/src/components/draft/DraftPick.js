@@ -16,7 +16,7 @@ const styles = {
   },
   pastPicksContainer: {
     display: "block",
-    height: 275, // TODO make responsive
+    height: 310, // TODO make responsive
     overflowY: "auto",
     overflowX: "hidden",
   },
@@ -97,14 +97,21 @@ class DraftPick extends Component {
     ) : null
     const currentPick = draft.can_pick ? (
       <CurrentPick currentTeam={currentTeam} />
-    ) : (
+    ) : draft.on_the_clock ? (
       <div>
         <em>On the Clock: {draft.on_the_clock.name}</em>
       </div>
-    )
+    ) : null
     const pastPicksContainerStyle = this.props.isPicking ?
       Object.assign({}, styles.pastPicksContainer, styles.pastPicksContainerWhilePicking) :
-      styles.pastPicksContainer
+      draft.on_the_clock ?
+      styles.pastPicksContainer :
+      {}
+    const nextPickContainer = draft.on_the_clock &&
+      <div style={styles.nextPickContainer}>
+            <h5>Round {roundNumber(lastPick.number+1, teamCount)}; Pick {nextPick}</h5>
+            <div style={styles.nextPick}>{currentPick}</div>
+          </div>
 
     return (
       <div>
@@ -135,10 +142,7 @@ class DraftPick extends Component {
               )}
             </tbody>
           </table>
-          <div style={styles.nextPickContainer}>
-            <h5>Round {roundNumber(lastPick.number+1, teamCount)}; Pick {nextPick}</h5>
-            <div style={styles.nextPick}>{currentPick}</div>
-          </div>
+          {nextPickContainer}
         </div>
       </div>
     )

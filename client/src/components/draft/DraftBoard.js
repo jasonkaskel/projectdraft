@@ -5,9 +5,22 @@ import { delay } from 'lodash'
 import actions from '../../actions'
 import asyncActions from '../../services'
 import Athlete from './Athlete'
+import FootballField from '../../assets/football-field.jpg'
 
 const styles = {
-  header: {
+  container: {
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  table: {
+    position: 'relative',
+  },
+  nameHeader: {
+    paddingTop: 5,
+    minWidth: 200,
+  },
+  roundHeader: {
+    paddingLeft: 5,
     height: 92,
   },
   currentPick: {
@@ -15,7 +28,17 @@ const styles = {
     outline: "none",
     boxShadow: "inset 0 0 10px 5px #9ecaed",
   },
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    zIndex: 0,
+    opacity: .1,
+  },
 }
+
+const FETCH_DELAY = 2000
 
 class DraftBoard extends Component {
   static propTypes = {
@@ -25,7 +48,7 @@ class DraftBoard extends Component {
   }
 
   fetchDraft(draft_id) {
-    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, 8000) }
+    const fetchAgain = () => { delay(() => { this.fetchDraft(draft_id) }, FETCH_DELAY) }
     this.props.fetchDraft(draft_id)
       .then(fetchAgain, fetchAgain)
   }
@@ -60,7 +83,7 @@ class DraftBoard extends Component {
         }
       }))
     }
-    if (!haveSetCurrent) {
+    if (!haveSetCurrent && draft.on_the_clock) {
       if (rounds.length % 2 === 1) {
         let round = [...Array(size)].map(function(__undef, i) {
           let key = '' + rounds.length + i
@@ -96,34 +119,37 @@ class DraftBoard extends Component {
     const rounds = this.picksToRounds(draft)
 
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>&nbsp;</th>
-            {draft.teams.map(function(team) {
-              return <th key={team.name}>{team.name}</th>
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {rounds.map(function(round, round_index) {
-            return (
-              <tr className={`round-${round_index}`} key={`round${round_index}`}>
-                <th style={styles.header}>{round_index+1}</th>
-                {round.map(function(pick, pick_index) {
-                  return !pick.athlete ? this.renderBlankPick(pick) : (
-                    <td key={`pick-${round_index}-${pick_index}`}>
-                      <Athlete
-                        athlete={pick.athlete}
-                      />
-                    </td>
-                  )
-                }, this)}
-              </tr>
-            )
-          }, this)}
-        </tbody>
-      </table>
+      <div style={styles.container}>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              {draft.teams.map(function(team) {
+                return <th style={styles.nameHeader} key={team.name}>{team.name}</th>
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {rounds.map(function(round, round_index) {
+              return (
+                <tr className={`round-${round_index}`} key={`round${round_index}`}>
+                  <th style={styles.roundHeader}>{round_index+1}</th>
+                  {round.map(function(pick, pick_index) {
+                    return !pick.athlete ? this.renderBlankPick(pick) : (
+                      <td key={`pick-${round_index}-${pick_index}`}>
+                        <Athlete
+                          athlete={pick.athlete}
+                        />
+                      </td>
+                    )
+                  }, this)}
+                </tr>
+              )
+            }, this)}
+          </tbody>
+        </table>
+        <img role="presentation" src={FootballField} style={styles.background} />
+      </div>
     )
   }
 

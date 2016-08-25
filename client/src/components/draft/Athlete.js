@@ -80,7 +80,7 @@ export default class Athlete extends Component {
             <div style={Object.assign({}, styles.photo, PositionMaskStyle)}></div>
           </div>
           <div style={styles.bio} className="clearfixAfter">
-            <div style={Object.assign({}, styles.name, athleteName.length > 12 ? styles.nameSmall : {})}>
+            <div style={Object.assign({}, styles.name, athleteName.length >= 12 ? styles.nameSmall : {})}>
               {athleteName}
             </div>
             <div style={styles.teamBye}>

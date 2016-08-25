@@ -15,10 +15,13 @@ class Draft < ActiveRecord::Base
     (picks.maximum(:number))
   end
 
+  def max_picks
+    teams.size * total_rounds
+  end
+
   def current_team
     num_picks = last_pick_number || 0
     num_teams = teams.size
-    max_picks = total_rounds * num_teams
     return nil if num_picks >= max_picks
 
     round = num_picks / num_teams + 1
