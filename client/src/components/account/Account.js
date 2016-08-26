@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes }     from 'react'
 import { ListGroup, ListGroupItem, Panel } from 'react-bootstrap'
-import FontAwesome from 'react-fontawesome'
-import { connect } from 'react-redux'
-
-import asyncActions from '../../services'
+import FontAwesome                         from 'react-fontawesome'
+import { connect }                         from 'react-redux'
+import { isEmpty }                         from 'lodash'
+import asyncActions                        from '../../services'
 
 const styles = {
   link: {
@@ -24,7 +24,7 @@ class Account extends Component {
   }
 
   render() {
-    if (!this.props.drafts) return null
+    if (isEmpty(this.props.drafts)) return null
 
     return (
       <Panel header="Your drafts">

@@ -24,7 +24,7 @@ const login = (state = initialState, action) => {
         ...state,
         isFetching: false,
         error: null,
-        token: action.data.token, // TODO: just for dev purposes
+        token: action.data.token,
         tokenCreated: true,
         loginDisabled: false,
       }

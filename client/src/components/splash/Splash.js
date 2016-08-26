@@ -11,6 +11,7 @@ const styles = {
   container: {
     padding: '1em',
     maxWidth: 600,
+    margin: '0 auto',
   },
   intro: {
     borderRadius: '10px',

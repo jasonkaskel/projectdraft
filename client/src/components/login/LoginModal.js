@@ -5,7 +5,13 @@ import { Modal, Form, FormGroup, ControlLabel, FormControl, Button, Alert } from
 import actions from '../../actions'
 import asyncActions from '../../services'
 
-class Login extends Component {
+const styles = {
+  justLooking: {
+    marginLeft: '0.5em',
+  }
+}
+
+class LoginModal extends Component {
   static propTypes = {
     loginDisabled: PropTypes.bool,
     error: PropTypes.string,
@@ -28,7 +34,7 @@ class Login extends Component {
 
   renderSuccess() {
     let message = "A link to login has been sent to your email or cell phone"
-    if (1 || process.env.NODE_ENV === 'development') { // TODO: hook up postmark/twilio to send these links instead
+    if (process.env.NODE_ENV === 'development') {
       message = (
         <a href={`http://projectdraft.dev:3000/login?token=${this.props.token}`}>Login</a>
       )
@@ -49,11 +55,17 @@ class Login extends Component {
             onChange={(e) => {this.props.setEmailOrCell(e.target.value)}}
           />
         </FormGroup>
-        {' '}
+        <br />
         <Button type="button"
           onClick={(e) => {this.props.requestToken(this.props.emailOrCell)}}
         >
           Send Login Link
+        </Button>
+        <Button type="button"
+          style={styles.justLooking}
+          onClick={this.props.hideLogin}
+        >
+          I'm Just Looking
         </Button>
       </Form>
     )
@@ -101,4 +113,4 @@ const mapDispatchToProps = (dispatch) => ({
   requestToken: (emailOrCell) => dispatch(asyncActions.requestToken(emailOrCell)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(LoginModal)

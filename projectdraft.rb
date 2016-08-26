@@ -3,8 +3,6 @@ require 'json'
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/param'
-require 'postmark'
-require 'twilio-ruby'
 
 require './models/athlete'
 require './models/draft'
@@ -12,12 +10,9 @@ require './models/manager'
 require './models/pick'
 require './models/team'
 require './models/token'
+require './concerns/send_login_token'
 
 set :root, File.dirname(__FILE__)
-
-configure do
-  set :mailer, Postmark::ApiClient.new(ENV['POSTMARK_API_KEY'])
-end
 
 if development?
   before do
@@ -50,16 +45,9 @@ post '/api/tokens' do
     Manager.find_by(cell: params['email_or_cell'].gsub(/\D/,''))
   halt 404 unless manager
 
-  token = Token.create! \
-    value: Token.random_token,
-    token_type: 'login',
-    manager: manager,
-    expires_at: 10.minutes.from_now
-
-  unless settings.development?
-    email_login_token(to: manager.email, token: token.value) if manager.email
-    sms_login_token(to: manager.cell, token: token.value) if manager.cell
-  end
+  token = SendLoginToken.perform \
+    manager:    manager,
+    send_token: !settings.development?
 
   status 201
   { token: token.value }.to_json
@@ -158,22 +146,4 @@ end
 def noauth_allowed?
   request.options? ||
     (request.post? && %w(tokens sessions).map { |r| "/api/#{r}" }.include?(request.path_info))
-end
-
-def email_login_token(to:, token:)
-  settings.mailer.deliver(
-    from: ENV['POSTMARK_SENDER_SIGNATURE'],
-    to: to,
-    subject: 'Your login link',
-    text_body: "#{ENV['SITE_URL']}/login?token=#{token}"
-  )
-end
-
-def sms_login_token(to:, token:)
-  client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
-  client.messages.create(
-    from: "+#{ENV['TWILIO_PHONE_NUMBER']}",
-    to: "+1#{to}",
-    body: "#{ENV['SITE_URL']}/login?token=#{token}"
-  )
 end
