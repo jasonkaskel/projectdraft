@@ -1,7 +1,16 @@
 import React, { Component, PropTypes } from 'react'
+import { ListGroup, ListGroupItem, Panel } from 'react-bootstrap'
+import FontAwesome from 'react-fontawesome'
 import { connect } from 'react-redux'
 
 import asyncActions from '../../services'
+
+const styles = {
+  link: {
+    paddingRight: 5,
+    paddingLeft: 5,
+  },
+}
 
 class Account extends Component {
   static propTypes = {
@@ -15,19 +24,27 @@ class Account extends Component {
   }
 
   render() {
+    if (!this.props.drafts) return null
+
     return (
-      <div>
-        <h1>Your Drafts</h1>
-        <ul>
+      <Panel header="Your drafts">
+        <ListGroup>
           {this.props.drafts.map( draft =>
-            <li key={draft.id}>
-              <span>{draft.name}</span> |
-              &nbsp;<a href={`/drafts/${draft.id}`}>Board</a> |
-              &nbsp;<a href={`/drafts/${draft.id}/picks`}>Current Pick</a>
-            </li>
+            <ListGroupItem header={draft.name} key={draft.id}>
+              <a style={styles.link} href={`/drafts/${draft.id}`}>Board</a>|
+              <a style={styles.link} href={`/drafts/${draft.id}/picks`}>Current Pick</a>
+              {draft.is_commissioner &&
+                <span>
+                  <span>|</span>
+                  <a style={styles.link} href={`/drafts/${draft.id}/commish`}>
+                    <FontAwesome name='cog' />
+                   </a>
+                </span>
+              }
+            </ListGroupItem>
           )}
-        </ul>
-      </div>
+        </ListGroup>
+      </Panel>
     )
   }
 

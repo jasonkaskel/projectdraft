@@ -20,6 +20,14 @@ input::-webkit-inner-spin-button {
   background-color: rgba(0, 255, 0, 0.1);
 }
 
+.splashTab {
+  min-width: 40%;
+}
+
+.splashTab .fa {
+  margin-right: 5px;
+}
+
 
 /* Position and sizing of burger button */
 .bm-burger-button {

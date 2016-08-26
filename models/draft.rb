@@ -1,11 +1,20 @@
 require 'active_record'
 
 require_relative 'team'
+require_relative 'manager'
 require_relative 'pick'
 
 class Draft < ActiveRecord::Base
   has_many :teams
   has_many :picks
+
+  def commissioners
+    Manager.where(id: commissioner_ids)
+  end
+
+  def commissioner?(manager)
+    commissioner_ids.include? manager.id
+  end
 
   def current_pick
     (last_pick_number || 0) + 1

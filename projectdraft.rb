@@ -118,7 +118,10 @@ end
 get '/api/drafts' do
   teams = Team.all.select { |team| team.manager_ids.include?(@manager.id) }
   # teams = Team.where(manager_ids: @manager.id) FIXME
-  drafts = teams.map { |team| team.draft }.uniq
+  drafts = teams
+    .map { |team| team.draft }
+    .uniq
+    .map { |draft| draft.as_json.merge(is_commissioner: draft.commissioner?(@manager))}
 
   status 200
   { drafts: drafts }.to_json
