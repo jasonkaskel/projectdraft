@@ -45,6 +45,9 @@ const styles = {
   picksContainer: {
     width: "100%",
   },
+  emptyPicksContainer: {
+    display: "none",
+  },
   picksHeaderCell: {
     verticalAlign: "top",
     minWidth: 92,
@@ -91,7 +94,7 @@ class DraftPick extends Component {
     const teamCount = draft.teams.length
     const currentTeam = draft.can_pick ? draft.on_the_clock : this.props.team
     const teamPicks = draft.picks.filter(pick => pick.team_id === currentTeam.id)
-    const lastPick = draft.picks[draft.picks.length-1] || {number: 0}
+    const lastPick = draft.picks[draft.picks.length-1] || {number: 1}
     const nextPick = nextPickNumber(draft.picks, teamCount)
     const error = this.props.error ? (
       <Alert bsStyle="danger">{this.props.error}</Alert>
@@ -104,6 +107,7 @@ class DraftPick extends Component {
         {lastPick && <div><em>Previous Pick: {lastPick.athlete.name}</em></div>}
       </div>
     ) : null
+    const picksContainerStyle = teamPicks.length === 0 ? styles.emptyPicksContainer : styles.picksContainer
     const pastPicksContainerStyle = this.props.isPicking ?
       Object.assign({}, styles.pastPicksContainer, styles.pastPicksContainerWhilePicking) :
       draft.on_the_clock ?
@@ -126,7 +130,7 @@ class DraftPick extends Component {
         </div>
         {error}
         <div className="DraftPick--picksSoFar">
-          <table style={styles.picksContainer}>
+          <table style={picksContainerStyle}>
             <tbody style={pastPicksContainerStyle}>
               {teamPicks.map(pick =>
                 <tr key={pick.id}>
