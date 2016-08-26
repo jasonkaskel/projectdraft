@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { delay, isEmpty } from 'lodash'
+import { delay } from 'lodash'
 import { Alert, Well } from 'react-bootstrap'
 
 import actions from '../../actions'
@@ -17,7 +17,7 @@ const styles = {
   },
   pastPicksContainer: {
     display: "block",
-    height: 310, // TODO make responsive
+    height: 300, // TODO make responsive
     overflowY: "auto",
     overflowX: "hidden",
   },
@@ -91,7 +91,7 @@ class DraftPick extends Component {
     const teamCount = draft.teams.length
     const currentTeam = draft.can_pick ? draft.on_the_clock : this.props.team
     const teamPicks = draft.picks.filter(pick => pick.team_id === currentTeam.id)
-    const lastPick = teamPicks[teamPicks.length-1] || {number: 0}
+    const lastPick = draft.picks[draft.picks.length-1] || {number: 0}
     const nextPick = nextPickNumber(draft.picks, teamCount)
     const error = this.props.error ? (
       <Alert bsStyle="danger">{this.props.error}</Alert>
@@ -100,7 +100,8 @@ class DraftPick extends Component {
       <CurrentPick currentTeam={currentTeam} />
     ) : draft.on_the_clock ? (
       <div>
-        <em>On the Clock: {draft.on_the_clock.name}</em>
+        <div><em>On the Clock: {draft.on_the_clock.name}</em></div>
+        {lastPick && <div><em>Previous Pick: {lastPick.athlete.name}</em></div>}
       </div>
     ) : null
     const pastPicksContainerStyle = this.props.isPicking ?
@@ -110,7 +111,7 @@ class DraftPick extends Component {
       {}
     const nextPickContainer = draft.on_the_clock &&
       <div style={styles.nextPickContainer}>
-            <h5>Round {roundNumber(lastPick.number+1, teamCount)}; Pick {nextPick}</h5>
+            <h5>Round {roundNumber(lastPick.number, teamCount)}; Pick {nextPick}</h5>
             <div style={styles.nextPick}>{currentPick}</div>
           </div>
 
@@ -166,7 +167,7 @@ const mapStateToProps = ({ draft }) => ({
   draft: draft.draft,
   team: draft.team,
   error: draft.makePickError,
-  isPicking: !!(!isEmpty(draft.searchTerm) || draft.currentPick),
+  isPicking: !!draft.draft.can_pick,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DraftPick)

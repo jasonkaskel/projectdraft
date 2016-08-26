@@ -12,7 +12,7 @@ const initialState = {
   team: null,
   athletes: null,
   searchTerm: '',
-  searchFilters: [],
+  searchFilters: ["QB", "WR", "RB", "TE"],
   currentPick: null,
 }
 
