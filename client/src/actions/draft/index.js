@@ -69,3 +69,24 @@ export const setCurrentPick = (athlete) => ({
   type: 'SET_CURRENT_PICK',
   athlete
 })
+
+export const reorderTeams = ({ dragged, hovered, team }) => ({
+  type: 'REORDER_TEAMS',
+  dragged,
+  hovered,
+  team
+})
+
+export const updateDraftOrderStart = () => ({
+  type: 'UPDATE_DRAFT_ORDER_START',
+})
+
+export const updateDraftOrderSuccess = (data) => ({
+  type: 'UPDATE_DRAFT_ORDER_SUCCESS',
+  data
+})
+
+export const updateDraftOrderFailure = (error) => ({
+  type: 'UPDATE_DRAFT_ORDER_FAILURE',
+  error
+})

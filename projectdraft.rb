@@ -18,6 +18,7 @@ if development?
   before do
     response.headers['Access-Control-Allow-Origin']='http://projectdraft.dev:3000'
     response.headers['Access-Control-Allow-Headers'] = ['Content-Type', 'Client-Access-Token']
+    response.headers['Access-Control-Allow-Methods'] = ['GET', 'POST', 'PUT']
   end
 end
 
@@ -31,6 +32,13 @@ before do
   token = Token.find_by(value: session_token, token_type: 'session')
   halt 401 unless session_token && token
   @manager = token.manager
+end
+
+before '/api/drafts/:draft_id*' do
+  pass if request.options? || request.get?
+  @draft = Draft.find(params.fetch('draft_id'))
+  halt 404 unless @draft
+  halt 401 unless @draft.commissioner?(@manager)
 end
 
 options '*' do
@@ -124,6 +132,8 @@ get '/api/drafts/:draft_id' do
   content_type :json
   {
     draft: {
+      name: draft.name,
+      started: draft.picks.count > 0,
       type: "snake",
       total_rounds: draft.total_rounds,
       teams: teams,
@@ -140,6 +150,25 @@ get '/api/drafts/:draft_id' do
       can_pick: @manager.has_next_pick?(draft)
     },
     team: @manager.owner_of
+  }.to_json
+end
+
+put '/api/drafts/:draft_id/order' do
+  param :team_ids, Array, required: true
+
+  teams = @draft.teams
+  params.fetch('team_ids').each_with_index do |team_id, idx|
+    team = teams.detect { |team| team.id == team_id }
+    next unless team
+    team.update!(ordering: (idx + 1) * -1)
+  end
+  teams.each { |team| team.update(ordering: team.ordering * -1) }
+
+  status 200
+  {
+    draft: {
+      teams: @draft.reload.teams
+    }
   }.to_json
 end
 

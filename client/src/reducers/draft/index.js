@@ -1,6 +1,10 @@
+import update from 'react/lib/update';
+
 const initialState = {
   isFetching: false,
   isMakingPick: false,
+  isUpdatingDraft: false,
+  updateDraftError: null,
   makePickError: null,
   drafts: [],
   draft: {
@@ -139,6 +143,40 @@ const draft = (state = initialState, action) => {
       return {
         ...state,
         currentPick: action.athlete
+      }
+    case 'REORDER_TEAMS':
+      return {
+        ...state,
+        draft: update(state.draft, {
+          teams: {
+            $splice: [
+              [action.dragged, 1],
+              [action.hovered, 0, action.team]
+            ]
+          }
+        })
+      }
+    case 'UPDATE_DRAFT_ORDER_START':
+      return {
+        ...state,
+        isUpdatingDraft: true,
+        updateDraftError: null
+      }
+    case 'UPDATE_DRAFT_ORDER_SUCCESS':
+      return {
+        ...state,
+        isUpdatingDraft: false,
+        updateDraftError: false,
+        draft: {
+          ...state.draft,
+          teams: action.data.draft.teams,
+        },
+      }
+    case 'UPDATE_DRAFT_ORDER_FAILURE':
+      return {
+        ...state,
+        isUpdatingDraft: false,
+        updateDraftError: action.err
       }
     default:
       return state

@@ -57,3 +57,19 @@ export const makePick = (athlete, team) => (dispatch, getState) => {
       },
     )
 }
+
+export const updateDraftOrder = (draftId, draft) => (dispatch, getState) => {
+  console.log(draft)
+  dispatch(actions.updateDraftOrderStart)
+  return xhr('put', `/drafts/${draftId}/order`, {data: {
+    team_ids: draft.teams.map(team => team.id)
+  }})
+    .then(
+      res => {
+        dispatch(actions.updateDraftOrderSuccess(res.data))
+      },
+      err => {
+        dispatch(actions.updateDraftOrderFailure(err))
+      }
+    )
+}

@@ -9,5 +9,5 @@ class Team < ActiveRecord::Base
   belongs_to :owner, class_name: 'Manager'
   has_many :picks
 
-  default_scope { order(order: :asc) }
+  default_scope { order(ordering: :asc) }
 end

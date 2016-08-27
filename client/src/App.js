@@ -6,6 +6,8 @@ import { Router, Route, browserHistory } from 'react-router'
 
 import './App.css';
 import appStore from './reducers'
+import Commish from './components/commish/Commish'
+import CommishOrder from './components/commish/Order'
 import Splash from './components/splash/Splash'
 import DraftBoard from './components/draft/DraftBoard'
 import DraftPick from './components/draft/DraftPick'
@@ -23,6 +25,8 @@ class App extends Component {
             <Route path="/" component={Splash} />
             <Route path="/drafts/:draft_id" component={DraftBoard} />
             <Route path="/drafts/:draft_id/picks" component={DraftPick} />
+            <Route path="/drafts/:draftId/commish" component={Commish} />
+            <Route path="/drafts/:draftId/commish/order" component={CommishOrder} />
             <Route path="/login" component={Login} />
           </Router>
           <LoginModal caller={this} />

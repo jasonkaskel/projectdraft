@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160825000418) do
+ActiveRecord::Schema.define(version: 20160827030929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,9 +65,9 @@ ActiveRecord::Schema.define(version: 20160825000418) do
     t.integer  "manager_ids", default: [],              array: true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "order",                    null: false
+    t.integer  "ordering",                 null: false
     t.integer  "owner_id"
-    t.index ["order"], name: "index_teams_on_order", unique: true, using: :btree
+    t.index ["ordering"], name: "index_teams_on_ordering", unique: true, using: :btree
   end
 
   create_table "tokens", force: :cascade do |t|
