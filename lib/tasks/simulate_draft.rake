@@ -6,7 +6,7 @@ require './models/pick'
 desc 'simulate a draft'
 task :simulate_draft, [:draft_id, :max_picks] do |t, args|
   start_pick_time = 3
-  min_pick_time = 1.5
+  min_pick_time = 0.5
   pick_time_decrement = 0.25
   draft_id = args[:draft_id].to_i || 1
   max_picks = args[:max_picks].to_i

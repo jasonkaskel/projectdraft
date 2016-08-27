@@ -19,6 +19,7 @@ const styles = {
   nameHeader: {
     paddingTop: 5,
     minWidth: 200,
+    fontSize: '14pt',
   },
   roundHeader: {
     paddingLeft: 5,
